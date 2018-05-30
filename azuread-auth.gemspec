@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name               = 'azuread-auth'
-  s.version            = '0.1.0'
+  s.version            = '0.1.1'
   s.platform           = Gem::Platform::RUBY
   s.authors            = ['Nilton Vasques']
   s.email              = ['nilton.vasques@gmail.com']
@@ -14,4 +14,5 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency 'minitest', '~> 5.10'
   s.add_development_dependency 'rake', '~> 12.1'
+  s.add_dependency 'jwt', '~> 2.1.0'
 end

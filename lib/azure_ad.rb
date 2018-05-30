@@ -3,7 +3,7 @@ require 'jwt'
 module AzureADAuth
   # This is the main class responsible to evaluate the equations
   class AzureAD
-    VERSION = '0.1.0'.freeze
+    VERSION = '0.1.1'.freeze
 
     # tenant = "nvsistemas.onmicrosoft.com"
     # app_id = "616f5cbb-b5e8-48b8-90c0-1193606880fc"
