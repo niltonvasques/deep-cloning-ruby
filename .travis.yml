@@ -1,0 +1,13 @@
+lang: ruby
+sudo: false
+notifications:
+  email: false
+script:
+  - bundle exec rake
+rvm:
+  - 2.0.0
+  - 2.1
+  - 2.2
+  - 2.3
+  - 2.4
+  - jruby
