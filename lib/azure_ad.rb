@@ -5,13 +5,7 @@ module AzureADAuth
   class AzureAD
     VERSION = '0.1.1'.freeze
 
-    # tenant = "nvsistemas.onmicrosoft.com"
-    # app_id = "616f5cbb-b5e8-48b8-90c0-1193606880fc"
-    # redirect_url = "http://localhost:3000/mykaefer_oauth"
-    # state = "12345"
-    # #client_secret = "nahpeukahsh8fi8ifier"
-    # client_secret = "cwdbdcej1a+4th5b3xsqj8gqe8shfo+sphkjd88vquo="
-    # resource = "http://localhost:3000/mykaefer_oauth"
+
     def initialize(opts = {})
       @tenant = opts[:tenant]
       @app_id = opts[:app_id]
@@ -25,20 +19,7 @@ module AzureADAuth
       "https://login.microsoftonline.com/#{@tenant}/oauth2/authorize?client_id=#{@app_id}&response_type=code&redirect_uri=#{@redirect_url}&response_mode=query&state=#{@state}&login_hint=#{login}"
     end
 
-    # PARAMS
-    #
-    #  code = params[:code]
-    #  session_state = params[:session_state]
-    #  state = params[:state]
-    # POST /{tenant}/oauth2/token HTTP/1.1
-    # Host: https://login.microsoftonline.com
-    # Content-Type: application/x-www-form-urlencoded
-    # grant_type=authorization_code
-    # &client_id=2d4d11a2-f814-46a7-890a-274a72a7309e
-    # &code=AwABAAAAvPM1KaPlrEqdFSBzjqfTGBCmLdgfSTLEMP...
-    # &redirect_uri=https%3A%2F%2Flocalhost%2Fmyapp%2F
-    # &resource=https%3A%2F%2Fservice.contoso.com%2F
-    # &client_secret=p@ssw0rd
+
     def request_access_token(opts = {})
       code = opts[:code]
       session_state = opts[:session_state]
@@ -54,11 +35,6 @@ module AzureADAuth
       response = Net::HTTP.post_form(URI.parse(token_url), params)
 
       body = JSON.parse(response.body)
-
-      puts "#" * 90
-      ap response.code
-      ap body
-      puts "#" * 90
 
       answer = { status: :failed, data: {} }
 
