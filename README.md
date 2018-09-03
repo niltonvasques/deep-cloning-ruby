@@ -7,5 +7,5 @@
 #### Add to your `Gemfile`
 
 ```ruby
-gem 'azuread-auth'
+gem 'deep-cloning'
 ```

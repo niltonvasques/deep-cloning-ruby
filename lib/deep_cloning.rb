@@ -1,8 +1,8 @@
 require 'jwt'
 
-module AzureADAuth
+module DeepCloning
   # This is the main class responsible to evaluate the equations
-  class AzureAD
+  class DeepCloning
     VERSION = '0.1.1'.freeze
 
 
