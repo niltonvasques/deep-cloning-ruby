@@ -10,9 +10,9 @@ Gem::Specification.new do |s|
   s.files              = ['lib/deep_cloning.rb']
   s.test_files         = ['test/test_deep_cloning.rb']
   s.require_paths      = ['lib']
-  s.license            = 'mit'
+  s.license            = 'MIT'
 
   s.add_development_dependency 'minitest', '~> 5.10'
   s.add_development_dependency 'rake', '~> 12.1'
-  s.add_dependency 'activerecord', '~> 4.2.10'
+  s.add_dependency 'activerecord', '~> 4.2'
 end
