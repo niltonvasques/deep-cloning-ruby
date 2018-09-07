@@ -3,7 +3,7 @@ require 'active_record'
 module DeepCloning
   # This is the main class responsible to evaluate the equations
   class Clone
-    VERSION = '0.1.0'.freeze
+    VERSION = '0.1.1'.freeze
     def initialize(root, opts = { except: [], save_root: true })
       @root = root
       @opts = opts
@@ -29,6 +29,7 @@ module DeepCloning
             walk?(n)
           end
           unless @cell
+            binding.pry
             ap @opts[:source].map { |s| "#{s.id} - #{s.class.name}" }
             raise 'cannot duplicate the hierarchy'
           end
@@ -66,9 +67,6 @@ module DeepCloning
           leafs_statuses["#{@cell.class.name}_#{@cell.id}"] = true
         end
       end
-    rescue => e
-      puts e.backtrace
-      puts e.message
     end
 
     # Need to check the relations instead the models only

@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name               = 'deep-cloning'
-  s.version            = '0.1.0'
+  s.version            = '0.1.1'
   s.platform           = Gem::Platform::RUBY
   s.authors            = ['Nilton Vasques']
   s.email              = ['nilton.vasques@gmail.com']
