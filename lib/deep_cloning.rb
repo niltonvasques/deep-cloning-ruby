@@ -7,6 +7,7 @@ module DeepCloning
     def initialize(root, opts = { except: [], save_root: true })
       @root = root
       @opts = opts
+      @opts[:source] = []
     end
 
     def replicate
@@ -21,7 +22,9 @@ module DeepCloning
           raise clone.errors.full_messages.join(', ') if clone.errors.any?
           @opts[clone.class.name] = { @root.id => clone }
         end
-        @opts[:source] = leafs(@root)
+        leafs(@root).each do |cell|
+         @opts[:source] << cell if block_given? and not yield(cell, cell, :skip?)
+        end
 
         while @opts[:source].any?
           @cell = @opts[:source].detect do |n|
@@ -36,10 +39,8 @@ module DeepCloning
 
           @opts[@cell.class.name] = {} unless @opts[@cell.class.name]
           next if @opts[@cell.class.name][@cell.id] # already cloned?
-          skip = false
-          skip = yield(@cell, clone, :skip?) if block_given?
 
-          if not @cell.class.name.in?(@opts[:except]) and not skip
+          unless @cell.class.name.in?(@opts[:except])
             clone = @cell.dup
             parents(clone.class).each do |belongs_to|
               old_id = clone.send("#{belongs_to.name}_id")
@@ -62,7 +63,9 @@ module DeepCloning
             raise "#{clone.class} - #{clone.errors.full_messages.join(', ')}" if clone.errors.any?
             @opts[clone.class.name][@cell.id] = clone
           end
-          @opts[:source] += leafs(@cell)
+          leafs(@cell).each do |cell|
+            @opts[:source] << cell if block_given? and not yield(cell, cell, :skip?)
+          end
           leafs_statuses["#{@cell.class.name}_#{@cell.id}"] = true
         end
       end
