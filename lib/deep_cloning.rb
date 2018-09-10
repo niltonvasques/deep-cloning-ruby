@@ -3,7 +3,7 @@ require 'active_record'
 module DeepCloning
   # This is the main class responsible to evaluate the equations
   class Clone
-    VERSION = '0.1.2'.freeze
+    VERSION = '0.1.3'.freeze
     def initialize(root, opts = { except: [], save_root: true })
       @root = root
       @opts = opts
