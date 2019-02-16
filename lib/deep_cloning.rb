@@ -3,11 +3,12 @@ require 'active_record'
 module DeepCloning
   # This is the main class responsible to evaluate the equations
   class Clone
-    VERSION = '0.1.3'.freeze
+    VERSION = '0.1.4'.freeze
     def initialize(root, opts = { except: [], save_root: true })
       @root = root
       @opts = opts
       @opts[:source] = []
+      @must_ignore = []
     end
 
     def replicate
@@ -19,7 +20,7 @@ module DeepCloning
           yield(@root, clone, :before_save) if block_given?
           clone.save if clone.new_record? # avoid save again if saved on block
           yield(@root, clone, :after_save) if block_given?
-          raise clone.errors.full_messages.join(', ') if clone.errors.any?
+          raise "#{clone.class} - #{clone.errors.full_messages.join(', ')}" if clone.errors.any?
           @opts[clone.class.name] = { @root.id => clone }
         end
         leafs(@root).each do |cell|
@@ -33,7 +34,7 @@ module DeepCloning
           end
           unless @cell
             ap @opts[:source].map { |s| "#{s.id} - #{s.class.name}" }
-            raise 'cannot duplicate the hierarchy'
+            raise "Cannot duplicate the Hierarchy. You must ignore: #{@must_ignore.join(', ')}"
           end
           @opts[:source] -= [@cell]
 
@@ -71,6 +72,14 @@ module DeepCloning
       end
     end
 
+    def safe_child?(child, parent)
+      !child.respond_to?("#{parent.name}_id".to_sym) or
+      child.send("#{parent.name}_id").nil? or
+      @opts[parent.class_name][child.send("#{parent.name}_id")] or
+      parent.class_name.in? @opts[:except]
+      # replicated parent?
+    end
+
     # Need to check the relations instead the models only
     def walk?(cell)
       parents(cell.class).map do |p|
@@ -84,9 +93,10 @@ module DeepCloning
           end
         else
           @opts[p.class_name] = {} unless @opts[p.class_name]
-          !cell.respond_to?("#{p.name}_id".to_sym) or cell.send("#{p.name}_id").nil? or @opts[p.class_name][cell.send("#{p.name}_id")] or p.class_name.in? @opts[:except] # replicated parent?
+          @must_ignore << p.class_name unless safe_child?(cell, p)
+          safe_child?(cell, p)
         end
-      end.reduce(true) { |result, value| result and value }
+      end.all?(&:present?)
     end
 
     def leafs(cell)
