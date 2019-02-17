@@ -93,8 +93,9 @@ module DeepCloning
           end
         else
           @opts[p.class_name] = {} unless @opts[p.class_name]
-          @must_ignore << p.class_name unless safe_child?(cell, p)
-          safe_child?(cell, p)
+          safe_child = safe_child?(cell, p)
+          @must_ignore << p.class_name unless safe_child
+          safe_child
         end
       end.all?(&:present?)
     end
