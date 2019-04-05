@@ -28,9 +28,9 @@ module DeepCloning
         end
 
         while @opts[:source].any?
-          @cell = @opts[:source].detect do |n|
-            n = yield(n, n, :prepare) if block_given?
-            walk?(n)
+          @cell = @opts[:source].detect do |node|
+            node = yield(node, node, :prepare) if block_given?
+            walk?(node)
           end
           unless @cell
             ap @opts[:source].map { |s| "#{s.id} - #{s.class.name}" }
