@@ -41,7 +41,7 @@ module DeepCloning
           @opts[@cell.class.name] = {} unless @opts[@cell.class.name]
           next if @opts[@cell.class.name][@cell.id] # already cloned?
 
-          unless @cell.class.name.in?(@opts[:except])
+          if copy_allowed?(@cell.class.name)
             clone = @cell.dup
             parents(clone.class).each do |belongs_to|
               old_id = clone.send("#{belongs_to.name}_id")
@@ -76,7 +76,7 @@ module DeepCloning
       !child.respond_to?("#{parent.name}_id".to_sym) or
       child.send("#{parent.name}_id").nil? or
       @opts[parent.class_name][child.send("#{parent.name}_id")] or
-      parent.class_name.in? @opts[:except]
+      not copy_allowed?(parent.class_name)
       # replicated parent?
     end
 
@@ -87,7 +87,7 @@ module DeepCloning
           if cell.respond_to?("#{p.name}_id".to_sym) and cell.send("#{p.name}_id")
             class_name = cell.send("#{p.name}").class.name
             @opts[class_name] = {} unless @opts[class_name]
-            @opts[class_name][cell.send("#{p.name}_id")] or class_name.in? @opts[:except] # replicated parent?
+            @opts[class_name][cell.send("#{p.name}_id")] or not copy_allowed?(class_name) # replicated parent?
           else
             true
           end
@@ -104,13 +104,13 @@ module DeepCloning
       node = cell.class
       arr = []
       node.reflect_on_all_associations(:has_one).each do |c|
-        unless c.class_name.in? @opts[:except]
+        if copy_allowed?(c.class_name)
           leaf = cell.send(c.name)
           arr << leaf if leaf&.persisted? and (@opts[:source].nil? or (not leaf.in? @opts[:source]))
         end
       end
       node.reflect_on_all_associations(:has_many).each do |c|
-        unless c.class_name.in? @opts[:except]
+        if copy_allowed?(c.class_name)
           cell.send(c.name).find_in_batches.each do |leafs|
             leafs.each do |leaf|
               arr << leaf if leaf&.persisted? and (@opts[:source].nil? or (not leaf.in? @opts[:source]))
