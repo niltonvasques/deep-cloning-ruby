@@ -3,7 +3,7 @@ require 'active_record'
 module DeepCloning
   # This is the main class responsible to evaluate the equations
   class Clone
-    VERSION = '0.1.4'.freeze
+    VERSION = '0.1.5'.freeze
     def initialize(root, opts = { except: [], save_root: true })
       @root = root
       @opts = opts
@@ -24,13 +24,13 @@ module DeepCloning
           @opts[clone.class.name] = { @root.id => clone }
         end
         leafs(@root).each do |cell|
-         @opts[:source] << cell if block_given? and not yield(cell, cell, :skip?)
+          @opts[:source] << cell if block_given? and not skip?(yield(cell, cell, :skip?))
         end
 
         while @opts[:source].any?
-          @cell = @opts[:source].detect do |n|
-            n = yield(n, n, :prepare) if block_given?
-            walk?(n)
+          @cell = @opts[:source].detect do |node|
+            node = yield(node, node, :prepare) if block_given?
+            walk?(node)
           end
           unless @cell
             ap @opts[:source].map { |s| "#{s.id} - #{s.class.name}" }
@@ -65,7 +65,7 @@ module DeepCloning
             @opts[clone.class.name][@cell.id] = clone
           end
           leafs(@cell).each do |cell|
-            @opts[:source] << cell if block_given? and not yield(cell, cell, :skip?)
+            @opts[:source] << cell if block_given? and not skip?(yield(cell, cell, :skip?))
           end
           leafs_statuses["#{@cell.class.name}_#{@cell.id}"] = true
         end
@@ -123,6 +123,11 @@ module DeepCloning
 
     def parents(node)
       parents = node.reflect_on_all_associations(:belongs_to) # name and class_name
+    end
+
+    def skip?(cell, skip)
+      return skip if skip.in? [true, false]
+      false # If the skip? moment is not passed, its set to false.
     end
   end
 end
