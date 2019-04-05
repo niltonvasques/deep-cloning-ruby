@@ -126,8 +126,8 @@ module DeepCloning
     end
 
     def should_copy?(klass)
-      klass.in? @opts[:including] if @opts[:except].nil?
-      !klass.in? @opts[:except] if @opts[:including].nil?
+      return !klass.in? @opts[:except] if @opts[:including].nil?
+      klass.in? @opts[:including]
     end
   end
 end
