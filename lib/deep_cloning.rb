@@ -24,7 +24,7 @@ module DeepCloning
           @opts[clone.class.name] = { @root.id => clone }
         end
         leafs(@root).each do |cell|
-         @opts[:source] << cell if block_given? and not yield(cell, cell, :skip?)
+          @opts[:source] << cell if block_given? and not skip?(cell, &Proc.new)
         end
 
         while @opts[:source].any?
@@ -65,7 +65,7 @@ module DeepCloning
             @opts[clone.class.name][@cell.id] = clone
           end
           leafs(@cell).each do |cell|
-            @opts[:source] << cell if block_given? and not yield(cell, cell, :skip?)
+            @opts[:source] << cell if block_given? and not skip?(cell, &Proc.new)
           end
           leafs_statuses["#{@cell.class.name}_#{@cell.id}"] = true
         end
@@ -123,6 +123,12 @@ module DeepCloning
 
     def parents(node)
       parents = node.reflect_on_all_associations(:belongs_to) # name and class_name
+    end
+
+    def skip?(cell, &block)
+      skip = block.call(cell, cell, :skip?)
+      return skip if skip.in? [true, false]
+      false # If the skip? moment is not passed, its set to false.
     end
   end
 end
