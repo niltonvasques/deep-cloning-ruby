@@ -124,5 +124,10 @@ module DeepCloning
     def parents(node)
       parents = node.reflect_on_all_associations(:belongs_to) # name and class_name
     end
+
+    def copy_allowed?(klass)
+      klass.in? @opts[:including] if @opts[:except].nil?
+      !klass.in? @opts[:except] if @opts[:including].nil?
+    end
   end
 end
