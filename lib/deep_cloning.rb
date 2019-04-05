@@ -24,13 +24,13 @@ module DeepCloning
           @opts[clone.class.name] = { @root.id => clone }
         end
         leafs(@root).each do |cell|
-         @opts[:source] << cell if block_given? and not yield(cell, cell, :skip?)
+          @opts[:source] << cell if block_given? and not skip?(yield(cell, cell, :skip?))
         end
 
         while @opts[:source].any?
-          @cell = @opts[:source].detect do |n|
-            n = yield(n, n, :prepare) if block_given?
-            walk?(n)
+          @cell = @opts[:source].detect do |node|
+            node = yield(node, node, :prepare) if block_given?
+            walk?(node)
           end
           unless @cell
             ap @opts[:source].map { |s| "#{s.id} - #{s.class.name}" }
@@ -65,7 +65,7 @@ module DeepCloning
             @opts[clone.class.name][@cell.id] = clone
           end
           leafs(@cell).each do |cell|
-            @opts[:source] << cell if block_given? and not yield(cell, cell, :skip?)
+            @opts[:source] << cell if block_given? and not skip?(yield(cell, cell, :skip?))
           end
           leafs_statuses["#{@cell.class.name}_#{@cell.id}"] = true
         end
@@ -128,6 +128,11 @@ module DeepCloning
     def should_copy?(klass)
       return !klass.in? @opts[:except] if @opts[:including].nil?
       klass.in? @opts[:including]
+    end
+
+    def skip?(cell, skip)
+      return skip if skip.in? [true, false]
+      false # If the skip? moment is not passed, its set to false.
     end
   end
 end
