@@ -126,11 +126,11 @@ module DeepCloning
     end
 
     def should_copy?(klass)
-      return !klass.in? @opts[:except] if @opts[:including].nil?
+      return !(klass.in? @opts[:except]) if @opts[:including].nil?
       klass.in? @opts[:including]
     end
 
-    def skip?(cell, skip)
+    def skip?(skip)
       return skip if skip.in? [true, false]
       false # If the skip? moment is not passed, its set to false.
     end
