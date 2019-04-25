@@ -1,11 +1,11 @@
 Gem::Specification.new do |s|
   s.name               = 'deep-cloning'
-  s.version            = '0.2.0'
+  s.version            = '0.2.1'
   s.platform           = Gem::Platform::RUBY
   s.authors            = ['Nilton Vasques', 'Victor Cordeiro', 'Beatriz Fagundes']
   s.email              = ['nilton.vasques@gmail.com', 'victorcorcos@gmail.com', 'beatrizsfslima@gmail.com']
   s.description        = 'DeepCloning is a gem that is able to replicate a set of records in depth'
-  s.homepage           = 'https://github.com/niltonvasques/deep-cloning'
+  s.homepage           = 'https://github.com/niltonvasques/deep-cloning-ruby'
   s.summary            = 'DeepCloning is a gem that is able to replicate a set of records in depth'
   s.files              = ['lib/deep_cloning.rb']
   s.test_files         = ['test/test_deep_cloning.rb']
