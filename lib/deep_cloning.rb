@@ -1,4 +1,3 @@
-require 'active_record'
 require 'hierarchy_tree'
 
 module DeepCloning

@@ -14,6 +14,6 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency 'minitest', '~> 5.10'
   s.add_development_dependency 'rake', '~> 12.1'
-  s.add_development_dependency 'hierarchy_tree'
+  s.add_development_dependency 'hierarchy_tree', '~> 0'
   s.add_dependency 'activerecord', '~> 4.2'
 end
