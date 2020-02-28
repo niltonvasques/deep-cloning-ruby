@@ -2,7 +2,7 @@ require 'active_record'
 require 'hierarchy_tree'
 
 module DeepCloning
-  def self.including(klass)
+  def self.descendants(klass)
     Hierarchy.descendants(klass)
   end
 
