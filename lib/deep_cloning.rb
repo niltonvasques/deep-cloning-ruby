@@ -1,9 +1,13 @@
-require 'active_record'
+require 'hierarchy_tree'
 
 module DeepCloning
-  # This is the main class responsible to evaluate the equations
+  def self.descendants(klass)
+    Hierarchy.descendants(klass)
+  end
+
+  # This is the main class responsible to duplicate an entire hierarchy
   class Clone
-    VERSION = '0.2.1'.freeze
+    VERSION = '0.2.2'.freeze
     def initialize(root, opts = { except: [], save_root: true })
       @root = root
       @opts = opts
